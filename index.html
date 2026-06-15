@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#4CAF50">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>عادل - لعبة المغامرات التعليمية</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     BACKGROUND ANIMATED LAYER
+════════════════════════════════════════ -->
+<div class="bg-animated" id="bg-clouds"></div>
+
+<!-- Hidden file input for avatar upload -->
+<input type="file" id="avatar-file-input" accept="image/*" style="display:none"
+  onchange="UI.handleAvatarUpload(this.files[0])">
+
+
+<!-- ════════════════════════════════════════
+     SCREEN 1: SPLASH
+════════════════════════════════════════ -->
+<div id="screen-splash" class="screen">
+  <div class="splash-logo">
+    <div class="game-title">🌟 عادل 🌟</div>
+    <div class="game-subtitle">لعبة المغامرات التعليمية</div>
+    
+    <img 
+      id="splash-avatar" 
+      class="hero-avatar-splash"
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234CAF50'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle'%3E😊%3C/text%3E%3C/svg%3E"
+      alt="عادل"
+    >
+
+    <div id="splash-name" style="color:white;font-weight:700;font-size:1.2rem;margin-bottom:10px;">
+      مرحباً يا صديقي!
+    </div>
+
+    <button class="btn-start" onclick="handleSplashStart()">
+      🎮 ابدأ اللعبة!
+    </button>
+
+    <div style="margin-top:14px; color:rgba(255,255,255,0.7); font-size:0.85rem;">
+      مغامرات ممتعة للأطفال من 5 إلى 12 سنة
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SCREEN 2: CHARACTER SETUP
+════════════════════════════════════════ -->
+<div id="screen-character" class="screen">
+  <div class="character-card">
+    <h2 class="screen-title">👤 شخصيتك</h2>
+
+    <!-- Avatar -->
+    <div class="character-avatar-container" onclick="UI.triggerAvatarUpload()">
+      <img 
+        id="char-avatar" 
+        class="character-avatar"
+        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234CAF50'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle'%3E😊%3C/text%3E%3C/svg%3E"
+        alt="الصورة الشخصية"
+      >
+      <div class="avatar-edit-btn">📷</div>
+    </div>
+    <p style="color:#999; font-size:0.85rem; margin-bottom:16px;">اضغط على الصورة لتغييرها</p>
+
+    <!-- Name -->
+    <div class="input-group">
+      <label for="char-name">اسم البطل</label>
+      <input 
+        id="char-name" 
+        type="text" 
+        placeholder="أدخل اسمك هنا..."
+        maxlength="20"
+        value="عادل"
+      >
+    </div>
+
+    <!-- Cloth Color -->
+    <div class="input-group">
+      <label>لون الملابس</label>
+      <div id="cloth-colors" class="color-picker-row"></div>
+    </div>
+
+    <!-- Save button -->
+    <button class="btn-primary" onclick="UI.saveCharacter()">
+      ✅ احفظ وابدأ المغامرة!
+    </button>
+
+    <button 
+      onclick="UI.showScreen('screen-splash')"
+      style="display:block;margin-top:10px;width:100%;padding:10px;border:none;background:none;color:#999;cursor:pointer;font-family:inherit;">
+      ← رجوع
+    </button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SCREEN 3: MAP / LEVEL SELECT
+════════════════════════════════════════ -->
+<div id="screen-map" class="screen">
+  <div class="map-container">
+    <!-- Header with player info -->
+    <div class="map-header">
+      <div style="display:flex; align-items:center; gap:12px; justify-content:center; margin-bottom:10px;">
+        <img 
+          id="map-avatar"
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234CAF50'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle'%3E😊%3C/text%3E%3C/svg%3E"
+          alt="البطل"
+          style="width:56px;height:56px;border-radius:50%;border:3px solid gold;object-fit:cover;"
+        >
+        <div style="text-align:right;">
+          <div id="map-player-name" style="font-family:'Fredoka One',cursive; font-size:1.4rem; color:white; text-shadow:2px 2px 4px rgba(0,0,0,0.3);">عادل</div>
+          <div style="color:rgba(255,255,255,0.8); font-size:0.85rem;">اختر مستواك!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-icon">🌱</span>
+        <span class="stat-label">النمو</span>
+        <span class="stat-value" id="stat-growth">10</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">💪</span>
+        <span class="stat-label">القوة</span>
+        <span class="stat-value" id="stat-power">10</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">⚡</span>
+        <span class="stat-label">الطاقة</span>
+        <span class="stat-value" id="stat-energy">50</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">⭐</span>
+        <span class="stat-label">المهارة</span>
+        <span class="stat-value" id="stat-skill">10</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">🏃</span>
+        <span class="stat-label">السرعة</span>
+        <span class="stat-value" id="stat-speed">10</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">⭐</span>
+        <span class="stat-label">النجوم</span>
+        <span class="stat-value" id="stat-stars">0</span>
+      </div>
+    </div>
+
+    <!-- Level Cards -->
+    <div id="levels-grid" class="levels-grid"></div>
+
+    <!-- Bottom Nav -->
+    <div class="map-bottom">
+      <button class="btn-icon" onclick="UI.showScreen('screen-achievements')" title="الإنجازات">🏆</button>
+      <button class="btn-icon" onclick="UI.showCharacterSetup()" title="الشخصية">👤</button>
+      <button class="btn-icon" onclick="UI.showScreen('screen-settings')" title="الإعدادات">⚙️</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SCREEN 4: GAME (Canvas)
+════════════════════════════════════════ -->
+<div id="screen-game" class="screen">
+  <canvas id="game-canvas"></canvas>
+
+  <!-- HUD -->
+  <div class="game-hud">
+    <div class="hud-stat">
+      <span id="hud-name">عادل</span>
+    </div>
+    <div class="hud-progress">
+      <div id="hud-progress-fill" class="hud-progress-fill" style="width:0%"></div>
+    </div>
+    <div class="hud-stat">
+      ⭐ <span id="hud-score">0</span>
+    </div>
+  </div>
+
+  <!-- Back button -->
+  <button class="btn-back-game" onclick="backFromGame()">🗺️ الخريطة</button>
+
+  <!-- D-pad Controls -->
+  <div class="game-controls">
+    <div class="dpad">
+      <button id="dpad-up"    class="dpad-btn dpad-up">⬆️</button>
+      <button id="dpad-left"  class="dpad-btn dpad-left">⬅️</button>
+      <button id="dpad-right" class="dpad-btn dpad-right">➡️</button>
+      <button id="dpad-down"  class="dpad-btn dpad-down">⬇️</button>
+    </div>
+    <div class="action-buttons">
+      <button id="btn-action-a" class="btn-action btn-action-a">🎯</button>
+      <button id="btn-action-b" class="btn-action btn-action-b">⬆️</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SCREEN 5: ACHIEVEMENTS
+════════════════════════════════════════ -->
+<div id="screen-achievements" class="screen">
+  <div class="achievements-container">
+    <div class="achievements-header">
+      <h1>🏆 الإنجازات</h1>
+      <p style="color:#AAA; margin-top:6px;">اكتشف إنجازاتك</p>
+    </div>
+
+    <div id="achievements-grid" class="achievements-grid"></div>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-primary" onclick="UI.showScreen('screen-map')">
+        ← العودة للخريطة
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SCREEN 6: SETTINGS
+════════════════════════════════════════ -->
+<div id="screen-settings" class="screen">
+  <div class="settings-container">
+    <h2 class="screen-title" style="text-align:center; margin-bottom:20px;">⚙️ الإعدادات</h2>
+
+    <div class="settings-row">
+      <span class="settings-label">🔊 الأصوات</span>
+      <label class="toggle">
+        <input type="checkbox" id="toggle-sound" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="settings-row">
+      <span class="settings-label">🎵 الموسيقى</span>
+      <label class="toggle">
+        <input type="checkbox" id="toggle-music" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="settings-row">
+      <span class="settings-label">📱 نسخة اللعبة</span>
+      <span style="color:#999; font-size:0.9rem;">1.0.0</span>
+    </div>
+
+    <div class="settings-row">
+      <span class="settings-label">🌐 المطور</span>
+      <span style="color:#999; font-size:0.85rem;">Adel Game</span>
+    </div>
+
+    <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+      <button class="btn-primary" onclick="UI.showScreen('screen-map')">
+        ← العودة للخريطة
+      </button>
+      <button 
+        onclick="UI.confirmReset()"
+        style="padding:14px;border:2px solid #F44336;background:none;color:#F44336;border-radius:14px;cursor:pointer;font-family:inherit;font-size:1rem;">
+        🗑️ إعادة تعيين اللعبة
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     MODALS
+════════════════════════════════════════ -->
+
+<!-- Level Complete Modal -->
+<div id="modal-level-complete" class="modal-overlay">
+  <div class="modal-box">
+    <span class="modal-emoji">🎉</span>
+    <div class="modal-title">أحسنت!</div>
+    <div id="modal-level-name" style="color:#4CAF50; font-weight:700; margin-bottom:8px; font-size:1.1rem;"></div>
+    <div id="modal-stars" style="font-size:2rem; margin:8px 0;">⭐⭐⭐</div>
+    <div class="modal-desc">نقاطك: <strong id="modal-score">0</strong></div>
+    <div class="modal-btns">
+      <button class="btn-modal btn-modal-yes" onclick="UI.nextLevel()">⏭️ التالي</button>
+      <button class="btn-modal btn-modal-no" onclick="goToMap()">🗺️ الخريطة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game Over Modal -->
+<div id="modal-gameover" class="modal-overlay">
+  <div class="modal-box">
+    <span class="modal-emoji">😅</span>
+    <div class="modal-title">حاول مجدداً!</div>
+    <div class="modal-desc">نقاطك: <strong id="modal-gameover-score">0</strong></div>
+    <div class="modal-btns">
+      <button class="btn-modal btn-modal-yes" onclick="UI.retryLevel()">🔄 مجدداً</button>
+      <button class="btn-modal btn-modal-no" onclick="goToMap()">🗺️ الخريطة</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════ -->
+<script src="data/gameData.js"></script>
+<script src="assets/js/state.js"></script>
+<script src="assets/js/audio.js"></script>
+<script src="assets/js/effects.js"></script>
+<script src="assets/js/game.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>
