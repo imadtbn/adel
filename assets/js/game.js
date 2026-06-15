@@ -1058,15 +1058,18 @@ const GameEngine = (() => {
     GameEvents.emit('game_over', { levelId: currentLevel?.id, score });
   }
 
-  function stop() {
+function stop() {
     gameRunning = false;
     if (animId) {
       cancelAnimationFrame(animId);
       animId = null;
     }
-    particles.clear();
+    // التعديل هنا: التأكد من أن الكائن ليس null قبل استدعاء clear
+    if (particles) {
+      particles.clear();
+    }
   }
-
+  
   function pause()  { gamePaused = true; }
   function resume() { gamePaused = false; }
 
